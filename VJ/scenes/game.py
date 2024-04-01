@@ -33,7 +33,7 @@ def StartScene():
     bullet_group.add(bullet_game)
     ''' 2.- crear el objeto pantalla'''
     screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-    background_image = pygame.image.load("assets/pixelBackground.jpg").convert()
+    background_image = pygame.image.load("VJ/assets/pixelBackground.jpg").convert()
 
     ''' Preparamos el gameloop '''
     ''' 1.- creamos el reloj del juego'''

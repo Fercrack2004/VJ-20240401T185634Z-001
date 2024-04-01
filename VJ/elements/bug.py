@@ -6,7 +6,7 @@ import pygame
 import random
 from pygame.locals import (RLEACCEL)
 
-BUGpng = pygame.image.load("assets/bug.png")
+BUGpng = pygame.image.load("VJ/assets/bug.png")
 BUGpng_scaled = pygame.transform.scale(BUGpng, (64, 64))
 BUGpng_mask = pygame.mask.from_surface(BUGpng_scaled)
 class Enemy(pygame.sprite.Sprite):

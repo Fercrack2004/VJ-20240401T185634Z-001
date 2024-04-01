@@ -5,7 +5,7 @@ este modulo manejara la creacion y movimiento de Jorge
 import pygame
 from pygame.locals import (
     K_UP, K_DOWN, K_LEFT, K_RIGHT, RLEACCEL)
-JorgePNG = pygame.image.load("assets/JorgeVJ.png")
+JorgePNG = pygame.image.load("VJ/assets/JorgeVJ.png")
 JorgePNG_rect=JorgePNG.get_rect()
 JorgePNG_scaled = pygame.transform.scale(JorgePNG, (80,80))
 JorgePNG_mask=pygame.mask.from_surface(JorgePNG_scaled)
