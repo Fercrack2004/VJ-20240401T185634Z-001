@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
             )
         )
         self.mask = BUGpng_mask
-        self.speed = random.randint(3,5)
+        self.speed = random.randint(5,7)
         
 
 
@@ -31,3 +31,4 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.move_ip(-self.speed, 0)
         if self.rect.right < 0:
             self.kill()
+        return 0
