@@ -188,7 +188,8 @@ def StartScene(lol):
         for bullet, enemy in collisions.items():
             for hit_enemy in enemy:
                 explosion = Explosion(explosion_frames, hit_enemy.rect.centerx, hit_enemy.rect.centery)
-                explosions.add(explosion)  # Agregar la explosión al grupo de explosiones
+                explosions.add(explosion)
+                explosionfart.play()  # Agregar la explosión al grupo de explosiones
                 puntaje += 100
                 disparo = False
                 
