@@ -82,9 +82,11 @@ def StartScene(lol):
     start_img = pygame.image.load("VJ/assets/startmedieval.png").convert_alpha()
     lore_img = pygame.image.load("VJ/assets/lorelol.png").convert_alpha()
     sobrevive_img = pygame.image.load("VJ/assets/papiro.png")
+    objetivo=pygame.image.load("VJ/assets/letreropng.png")
     imagen_atras = pygame.image.load("VJ/assets/back.png").convert_alpha()
     quitimg=pygame.image.load("VJ/assets/quit.png").convert_alpha()
     sobrevive_rect = sobrevive_img.get_rect(topleft=(0,0))
+    objetivolol=objetivo.get_rect(topright=(1000,0))
     start_boton = Boton(336,375,pygame.transform.scale(start_img,(100,700)),1)
     lore_boton = Boton(336,500,pygame.transform.scale(lore_img,(100,700)),1)
     quitboton=Boton(336,625,pygame.transform.scale(quitimg,(100,700)),1)
@@ -135,6 +137,7 @@ def StartScene(lol):
                     running = False
             if cual_menu == "lore":
                 screen.blit(sobrevive_img,(sobrevive_rect))
+                screen.blit(objetivo,(objetivolol))
                 if atras_boton.draw(screen):
                     menuclick.play()
                     cual_menu = "main"
