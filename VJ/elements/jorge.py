@@ -6,7 +6,7 @@ import pygame
 from pygame.locals import (K_UP, K_DOWN, K_LEFT, K_RIGHT, RLEACCEL)
 
 
-JorgePNG = pygame.image.load('VJ/assets/JorgeVJ.png').convert_alpha()
+JorgePNG = pygame.image.load('VJ/assets/JorgeVJ.png')
 JorgePNG_scaled = pygame.transform.scale(JorgePNG, (80,80))
 
 class Player(pygame.sprite.Sprite):
@@ -22,13 +22,13 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, pressed_keys):
         if pressed_keys[K_UP]:
-            self.rect.move_ip(0,-4)
+            self.rect.move_ip(0,-7)
         if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0,4)
+            self.rect.move_ip(0,7)
         if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-4,0)
+            self.rect.move_ip(-7,0)
         if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(4,0)
+            self.rect.move_ip(7,0)
 
         self.rect.left = max(self.rect.left, 0)
         self.rect.right = min(self.rect.right, self.screen_width)
