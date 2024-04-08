@@ -6,6 +6,7 @@ from elements.botones import Boton
 from elements.bbullet import Bullet
 from elements.bala import Bala
 
+
 pygame.init() 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
@@ -35,7 +36,7 @@ def muerte(screen):
     pygame.mixer.music.stop()
     pygame.mixer.music.load("VJ/assets/musicgoofyass/besame.wav")
     pygame.mixer.music.play(-1)
-
+    menuclick=pygame.mixer.Sound("VJ/assets/musicgoofyass/mineboton.wav")
     restart = pygame.image.load('VJ/assets/restart.png').convert_alpha()
     restartbuttom = Boton(500, 300, pygame.transform.scale(restart,(100,700)),1)
     backtomenu = pygame.image.load('VJ/assets/backmenu.png').convert_alpha()
@@ -48,9 +49,11 @@ def muerte(screen):
 
 
         if restartbuttom.draw(screen):
+            menuclick.play()
             pygame.mixer.music.stop()
             return True
         if backtomenubuttom.draw(screen):
+            menuclick.play()
             pygame.mixer.music.stop()
             return False
 
@@ -65,11 +68,15 @@ def muerte(screen):
 def StartScene(lol):
     ''' iniciamos los modulos de pygame'''
     pygame.display.set_caption("Jorge The Game")
-    
+    vidas=3
     # Cargar y reproducir la música del menú
     pygame.mixer.music.load("VJ/assets/musicgoofyass/Quando.wav")
     pygame.mixer.music.play(-1)
-
+    menuclick=pygame.mixer.Sound("VJ/assets/musicgoofyass/mineboton.wav")
+    explosionfart=pygame.mixer.Sound("VJ/assets/musicgoofyass/explosion.wav")
+    dañosound=pygame.mixer.Sound("VJ/assets/musicgoofyass/oof.wav")
+    espada=pygame.mixer.Sound("VJ/assets/musicgoofyass/bow.wav")
+    realdead=pygame.mixer.Sound("VJ/assets/musicgoofyass/metalgear.wav")
     pausado = True
     cual_menu = "main"
     start_img = pygame.image.load("VJ/assets/startmedieval.png").convert_alpha()
@@ -114,18 +121,22 @@ def StartScene(lol):
                     pygame.mixer.music.play(-1)
                     all_sprites.add(player)
                 if start_boton.draw(screen):
+                    menuclick.play()
                     pausado = False
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load("VJ/assets/musicgoofyass/vordt.wav")
                     pygame.mixer.music.play(-1)
                     all_sprites.add(player)
                 if lore_boton.draw(screen):
+                    menuclick.play()
                     cual_menu = "lore"
                 if quitboton.draw(screen):
+                    menuclick.play()
                     running = False
             if cual_menu == "lore":
                 screen.blit(sobrevive_img,(sobrevive_rect))
                 if atras_boton.draw(screen):
+                    menuclick.play()
                     cual_menu = "main"
         if pausado == False:
             screen.blit(background_image, [0, 0])
@@ -136,6 +147,7 @@ def StartScene(lol):
                         running = False
                     elif event.key ==K_SPACE:
                         if disparo == False:
+                            espada.play()
                             bullet = Bala(player.rect.centerx + 20, player.rect.centery + 2)
                             balas.add(bullet)
                             disparo = True
@@ -193,6 +205,8 @@ def StartScene(lol):
                     lol=0
                     StartScene(lol)
                     running=False
+                
+                    
         explosions.update()
         explosions.draw(screen)
 
