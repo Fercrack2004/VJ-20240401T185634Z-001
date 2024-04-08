@@ -1,4 +1,4 @@
-import pygame
+'''import pygame
 from pygame.locals import (K_ESCAPE, KEYDOWN, QUIT)
 from elements.jorge import Player
 from elements.bug import Enemy
@@ -47,4 +47,4 @@ def mainmenu():
                 if atras_boton.draw(screen):
                     cual_menu = "main"
         if pausado == False:
-            screen.blit(background_image, [0, 0])
+            screen.blit(background_image, [0, 0])'''
