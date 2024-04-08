@@ -79,6 +79,8 @@ def StartScene(lol):
     realdead=pygame.mixer.Sound("VJ/assets/musicgoofyass/metalgear.wav")
     pausado = True
     cual_menu = "main"
+    corazon_img = pygame.image.load("VJ/assets/cora.png").convert_alpha()
+    corazon_img = pygame.transform.scale(corazon_img, (40, 40))
     start_img = pygame.image.load("VJ/assets/startmedieval.png").convert_alpha()
     lore_img = pygame.image.load("VJ/assets/lorelol.png").convert_alpha()
     sobrevive_img = pygame.image.load("VJ/assets/papiro.png")
@@ -107,6 +109,7 @@ def StartScene(lol):
     all_sprites = pygame.sprite.Group()
     explosions = pygame.sprite.Group() 
 
+    juegocomenzado=False
     puntaje = 0
     font = pygame.font.Font('freesansbold.ttf', 32)
     frame_index=0
@@ -121,6 +124,7 @@ def StartScene(lol):
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load("VJ/assets/musicgoofyass/vordt.wav")
                     pygame.mixer.music.play(-1)
+                    juegocomenzado=True
                     all_sprites.add(player)
                 if start_boton.draw(screen):
                     menuclick.play()
@@ -128,6 +132,7 @@ def StartScene(lol):
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load("VJ/assets/musicgoofyass/vordt.wav")
                     pygame.mixer.music.play(-1)
+                    juegocomenzado=True
                     all_sprites.add(player)
                 if lore_boton.draw(screen):
                     menuclick.play()
@@ -160,7 +165,11 @@ def StartScene(lol):
                     new_enemy = Enemy(SCREEN_WIDTH, SCREEN_HEIGHT)
                     enemies.add(new_enemy)
                     all_sprites.add(new_enemy)
-                    
+        if juegocomenzado:
+            corazon_x = SCREEN_WIDTH - 40
+            corazon_y = 10
+            for i in range(vidas):
+                screen.blit(corazon_img, (corazon_x - i * 40, corazon_y))           
         
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -169,7 +178,8 @@ def StartScene(lol):
     
             if event.type == pygame.QUIT:
                 running = False
-        screen.blit(font.render(str(puntaje), True, (255,255,255), (0,0,0)), (0,0)) 
+        if juegocomenzado:
+            screen.blit(font.render(str(puntaje), True, (255,255,255), (0,0,0)), (0,0)) 
         for entity in balas:
             entity.update()
             screen.blit(entity.surf,entity.rect)
@@ -199,16 +209,27 @@ def StartScene(lol):
 
         if pygame.sprite.spritecollide(player, enemies, False):
             if pygame.sprite.spritecollide(player, enemies, False, pygame.sprite.collide_mask):
-                player.kill()
-                death = muerte(screen)
-                if death == True:
-                    lol=1
-                    StartScene(lol)
-                    running=False
-                elif death == False:
-                    lol=0
-                    StartScene(lol)
-                    running=False
+            
+                vidas -= 1
+
+                if vidas <= 0:
+                    player.kill()
+                    realdead.play()
+                    death = muerte(screen)
+                    if death == True:
+                # Reiniciar el juego
+                        lol = 1
+                        StartScene(lol)
+                        running = False
+                    elif death == False:
+                # Regresar al menú principal
+                        lol = 0
+                        StartScene(lol)
+                        running = False
+                else:
+                    for enemy in pygame.sprite.spritecollide(player, enemies, False):
+                        enemy.kill()
+                    dañosound.play()
                 
                     
         explosions.update()
