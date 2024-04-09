@@ -2,10 +2,11 @@ import pygame
 from pygame.locals import (K_ESCAPE, KEYDOWN, QUIT, K_SPACE)
 from elements.jorge import Player
 from elements.bug import (Enemy, explosion_frames)
+from elements.rayo import Rayo
 from elements.botones import Boton
 from elements.bbullet import Bullet
 from elements.bala import Bala
-
+from elements.finalboss import FinalBoss
 
 pygame.init() 
 SCREEN_WIDTH = 1000
@@ -14,6 +15,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 background_image = pygame.image.load("VJ/assets/pixelBackground.jpg").convert()
 menuback=pygame.image.load("VJ/assets/jorgemenu.png").convert()
 deadmenu=pygame.image.load("VJ/assets/deadjorge.png")
+winmenu=pygame.image.load("VJ/assets/jorgewin.png")
 pygame.display.set_caption("Jorge The Game")
 lol=0
 class Explosion(pygame.sprite.Sprite):
@@ -63,7 +65,37 @@ def muerte(screen):
                 return pygame.quit()
         
         pygame.display.update()
+def win(screen):
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load("VJ/assets/musicgoofyass/win.wav")
+    pygame.mixer.music.play(-1)
+    menuclick=pygame.mixer.Sound("VJ/assets/musicgoofyass/mineboton.wav")
+    restart = pygame.image.load('VJ/assets/restart.png').convert_alpha()
+    restartbuttom = Boton(500, 300, pygame.transform.scale(restart,(100,700)),1)
+    backtomenu = pygame.image.load('VJ/assets/backmenu.png').convert_alpha()
+    backtomenubuttom = Boton(500, 450, pygame.transform.scale(backtomenu,(100,700)),1)
+
+    run = True
+
+    while run:
+        screen.blit(winmenu, [0, 0])
+
+
+        if restartbuttom.draw(screen):
+            menuclick.play()
+            pygame.mixer.music.stop()
+            return True
+        if backtomenubuttom.draw(screen):
+            menuclick.play()
+            pygame.mixer.music.stop()
+            return False
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.display.quit()
+                return pygame.quit()
         
+        pygame.display.update()       
 
 def StartScene(lol):
     ''' iniciamos los modulos de pygame'''
@@ -77,6 +109,8 @@ def StartScene(lol):
     dañosound=pygame.mixer.Sound("VJ/assets/musicgoofyass/oof.wav")
     espada=pygame.mixer.Sound("VJ/assets/musicgoofyass/bow.wav")
     realdead=pygame.mixer.Sound("VJ/assets/musicgoofyass/metalgear.wav")
+    nolodiga=pygame.mixer.Sound("VJ/assets/musicgoofyass/nolodiga.wav")
+    jefe=pygame.mixer.Sound("VJ/assets/musicgoofyass/jefe.wav")
     pausado = True
     cual_menu = "main"
     corazon_img = pygame.image.load("VJ/assets/cora.png").convert_alpha()
@@ -103,12 +137,22 @@ def StartScene(lol):
     ADDENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(ADDENEMY, 600)
 
+    ADDRAYO = pygame.USEREVENT + 10
+    pygame.time.set_timer(ADDRAYO, 700)
+
+    ADD_FINAL_BOSS = pygame.USEREVENT + 2
+    pygame.time.set_timer(ADD_FINAL_BOSS, 1200)
+
     player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
     enemies = pygame.sprite.Group()
+    rayos = pygame.sprite.Group()
     balas = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     explosions = pygame.sprite.Group() 
 
+    final_boss = None
+    final_boss_group = pygame.sprite.Group()
+    final_boss_created= False
     juegocomenzado=False
     puntaje = 0
     font = pygame.font.Font('freesansbold.ttf', 32)
@@ -165,6 +209,21 @@ def StartScene(lol):
                     new_enemy = Enemy(SCREEN_WIDTH, SCREEN_HEIGHT)
                     enemies.add(new_enemy)
                     all_sprites.add(new_enemy)
+                elif event.type == ADD_FINAL_BOSS:
+                    if puntaje >= 1000 and not final_boss_created:
+                        final_boss = FinalBoss(SCREEN_WIDTH, SCREEN_HEIGHT)
+                        final_boss_group.add(final_boss)
+                        all_sprites.add(final_boss)
+                        final_boss_created = True
+                        explosion = Explosion(explosion_frames, final_boss.rect.centerx, final_boss.rect.centery)
+                        explosions.add(explosion)
+                        nolodiga.play()
+                elif final_boss_created:
+                    if event.type==ADDRAYO:
+                        new_rayo = Rayo(SCREEN_WIDTH, SCREEN_HEIGHT)
+                        enemies.add(new_rayo)
+                        all_sprites.add(new_rayo)
+        
         if juegocomenzado:
             corazon_x = SCREEN_WIDTH - 40
             corazon_y = 10
@@ -194,6 +253,9 @@ def StartScene(lol):
             elif isinstance(entity, Enemy):
                 screen.blit(entity.image, entity.rect)
                 entity.mask = pygame.mask.from_surface(entity.image)
+            elif isinstance(entity, Rayo):
+                screen.blit(entity.image, entity.rect)
+                entity.mask = pygame.mask.from_surface(entity.image)
         for entity in enemies:
             score = entity.update()
             puntaje += score
@@ -205,8 +267,42 @@ def StartScene(lol):
                 explosionfart.play()  # Agregar la explosión al grupo de explosiones
                 puntaje += 100
                 disparo = False
-                
-
+        
+        collisions_final_boss = pygame.sprite.groupcollide(balas, final_boss_group, True, False, pygame.sprite.collide_mask)
+        for bullet, final_boss_list in collisions_final_boss.items():  # Itera sobre las instancias de FinalBoss en final_boss_group
+            for final_boss in final_boss_list:
+                explosion = Explosion(explosion_frames, final_boss.rect.centerx, final_boss.rect.centery)
+                explosions.add(explosion)
+                explosionfart.play()
+                final_boss.health -= 100  # Reducir la salud del Final Boss
+                disparo = False
+        
+                if final_boss.health <= 0:
+                    player.kill()
+                    nolodiga.stop()
+                    realdead.play()
+                    death = win(screen)
+                    if death == True:
+                # Reiniciar el juego
+                        lol = 1
+                        StartScene(lol)
+                        running = False
+                    elif death == False:
+                # Regresar al menú principal
+                        lol = 0
+                        StartScene(lol)
+                        running = False
+    # Actualizar y dibujar FinalBoss si está presente
+        if final_boss_created:
+            
+            for entity in final_boss_group:
+                entity.draw_health_bar(screen)  
+                    
+                if isinstance(entity, FinalBoss):
+                    screen.blit(entity.image, entity.rect)
+                    entity.mask = pygame.mask.from_surface(entity.image)
+                    final_boss_group.update()
+                    
         if pygame.sprite.spritecollide(player, enemies, False):
             if pygame.sprite.spritecollide(player, enemies, False, pygame.sprite.collide_mask):
             
@@ -214,6 +310,31 @@ def StartScene(lol):
 
                 if vidas <= 0:
                     player.kill()
+                    nolodiga.stop()
+                    realdead.play()
+                    death = muerte(screen)
+                    if death == True:
+                # Reiniciar el juego
+                        lol = 1
+                        StartScene(lol)
+                        running = False
+                    elif death == False:
+                # Regresar al menú principal
+                        lol = 0
+                        StartScene(lol)
+                        running = False
+                else:
+                    for enemy in pygame.sprite.spritecollide(player, enemies, False):
+                        enemy.kill()
+                    dañosound.play()
+        if pygame.sprite.spritecollide(player, rayos, False):
+            if pygame.sprite.spritecollide(player, rayos, False, pygame.sprite.collide_mask):
+                
+                vidas -= 1
+
+                if vidas <= 0:
+                    player.kill()
+                    nolodiga.stop()
                     realdead.play()
                     death = muerte(screen)
                     if death == True:

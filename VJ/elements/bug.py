@@ -62,9 +62,9 @@ class Enemy(pygame.sprite.Sprite):
         Método para reproducir la animación de explosión.
         """
         if self.explosion_index < len(explosion_frames):
-            # Dibujar el siguiente fotograma de la explosión en la pantalla
+            
             screen.blit(explosion_frames[self.explosion_index], self.rect)
             self.explosion_index += 1
         else:
-            # Si se alcanza el último fotograma, se reinicia la animación
+            
             self.explosion_index = 0
