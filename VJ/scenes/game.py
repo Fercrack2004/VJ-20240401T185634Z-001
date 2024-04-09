@@ -279,6 +279,7 @@ def StartScene(lol):
         
                 if final_boss.health <= 0:
                     player.kill()
+                    final_boss.kill()
                     nolodiga.stop()
                     realdead.play()
                     death = win(screen)
@@ -310,6 +311,7 @@ def StartScene(lol):
 
                 if vidas <= 0:
                     player.kill()
+                    final_boss.kill()
                     nolodiga.stop()
                     realdead.play()
                     death = muerte(screen)
