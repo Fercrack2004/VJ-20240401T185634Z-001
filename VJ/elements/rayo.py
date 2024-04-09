@@ -2,7 +2,7 @@ import pygame
 import random
 from pygame.locals import (RLEACCEL)
 
-rayopng = pygame.image.load("VJ/assets/rayo.png")
+rayopng = pygame.image.load("VJ/assets/raidpng.png")
 rayopng_scaled = pygame.transform.scale(rayopng, (64, 64))
 rayopng_mask = pygame.mask.from_surface(rayopng_scaled)
 
