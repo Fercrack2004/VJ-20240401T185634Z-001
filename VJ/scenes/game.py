@@ -210,7 +210,10 @@ def StartScene(lol):
                     enemies.add(new_enemy)
                     all_sprites.add(new_enemy)
                 elif event.type == ADD_FINAL_BOSS:
-                    if puntaje >= 1000 and not final_boss_created:
+                    if puntaje >= 10000 and not final_boss_created:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load("VJ/assets/musicgoofyass/ludwig.wav")
+                        pygame.mixer.music.play(-1)
                         final_boss = FinalBoss(SCREEN_WIDTH, SCREEN_HEIGHT)
                         final_boss_group.add(final_boss)
                         all_sprites.add(final_boss)
@@ -233,7 +236,7 @@ def StartScene(lol):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    pausado = True
+                    pausado = False
     
             if event.type == pygame.QUIT:
                 running = False

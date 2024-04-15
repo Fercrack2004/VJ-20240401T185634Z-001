@@ -21,7 +21,7 @@ class FinalBoss(pygame.sprite.Sprite):
         
         self.screen_width = SCREEN_WIDTH
         self.screen_height = SCREEN_HEIGHT
-        self.health = 1000
+        self.health = 10000
         self.rect = self.image.get_rect(
             center=(
                 SCREEN_WIDTH+100,
