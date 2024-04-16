@@ -314,7 +314,8 @@ def StartScene(lol):
 
                 if vidas <= 0:
                     player.kill()
-                    final_boss.kill()
+                    if final_boss_created:
+                        final_boss.kill()
                     nolodiga.stop()
                     realdead.play()
                     death = muerte(screen)
